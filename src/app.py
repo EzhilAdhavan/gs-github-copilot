@@ -8,6 +8,9 @@ for extracurricular activities at Mergington High School.
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import List
 import os
 from pathlib import Path
 
@@ -65,3 +68,65 @@ def signup_for_activity(activity_name: str, email: str):
     # Add student
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
+
+
+# Health Tracker Data Models
+class HealthRecord(BaseModel):
+    date: str
+    steps: int = Field(ge=0, description="Number of steps taken")
+    water_intake: float = Field(ge=0, description="Water intake in liters")
+    sleep_hours: float = Field(ge=0, le=24, description="Hours of sleep")
+    calories: int = Field(ge=0, description="Calories consumed")
+
+
+# In-memory health records database
+health_records: List[dict] = []
+
+
+@app.get("/health")
+def get_health_records():
+    """Get all health records"""
+    return health_records
+
+
+@app.post("/health")
+def add_health_record(record: HealthRecord):
+    """Add a new health record"""
+    health_record = {
+        "id": len(health_records) + 1,
+        "date": record.date,
+        "steps": record.steps,
+        "water_intake": record.water_intake,
+        "sleep_hours": record.sleep_hours,
+        "calories": record.calories,
+        "timestamp": datetime.now().isoformat()
+    }
+    health_records.append(health_record)
+    return {"message": "Health record added successfully", "record": health_record}
+
+
+@app.get("/health/stats")
+def get_health_stats():
+    """Get health statistics summary"""
+    if not health_records:
+        return {
+            "total_records": 0,
+            "avg_steps": 0,
+            "avg_water_intake": 0,
+            "avg_sleep_hours": 0,
+            "avg_calories": 0
+        }
+    
+    total_records = len(health_records)
+    avg_steps = sum(record["steps"] for record in health_records) / total_records
+    avg_water_intake = sum(record["water_intake"] for record in health_records) / total_records
+    avg_sleep_hours = sum(record["sleep_hours"] for record in health_records) / total_records
+    avg_calories = sum(record["calories"] for record in health_records) / total_records
+    
+    return {
+        "total_records": total_records,
+        "avg_steps": round(avg_steps, 2),
+        "avg_water_intake": round(avg_water_intake, 2),
+        "avg_sleep_hours": round(avg_sleep_hours, 2),
+        "avg_calories": round(avg_calories, 2)
+    }

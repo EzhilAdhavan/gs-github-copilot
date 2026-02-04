@@ -28,6 +28,24 @@ header h1 {
   margin-bottom: 10px;
 }
 
+header nav {
+  margin-top: 1rem;
+}
+
+header nav a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  display: inline-block;
+}
+
+header nav a:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
 main {
   display: flex;
   flex-wrap: wrap;
