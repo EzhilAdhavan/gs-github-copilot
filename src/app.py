@@ -8,7 +8,7 @@ for extracurricular activities at Mergington High School.
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import List
 import os
@@ -73,10 +73,10 @@ def signup_for_activity(activity_name: str, email: str):
 # Health Tracker Data Models
 class HealthRecord(BaseModel):
     date: str
-    steps: int
-    water_intake: float  # in liters
-    sleep_hours: float
-    calories: int
+    steps: int = Field(ge=0, description="Number of steps taken")
+    water_intake: float = Field(ge=0, description="Water intake in liters")
+    sleep_hours: float = Field(ge=0, le=24, description="Hours of sleep")
+    calories: int = Field(ge=0, description="Calories consumed")
 
 
 # In-memory health records database

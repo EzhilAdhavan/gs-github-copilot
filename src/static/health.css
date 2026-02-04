@@ -1,22 +1,5 @@
 /* Health Tracker Specific Styles */
 
-nav {
-  margin-top: 1rem;
-}
-
-nav a {
-  color: #ffffff;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-nav a:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
 #stats-container {
   background-color: #f8f9fa;
   padding: 1.5rem;
